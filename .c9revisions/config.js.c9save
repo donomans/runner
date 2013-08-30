@@ -1,0 +1,1 @@
+{"ts":1377880751738,"silentsave":true,"restoring":false,"patch":[[{"diffs":[[1,"\"use strict\";\nvar config = {};\n\n///load config.json file if it exists and contains stuff\n\n\n\n\n\n\n\n\nexports.config = config;"]],"start1":0,"start2":0,"length1":0,"length2":121}]],"length":121}

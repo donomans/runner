@@ -4,9 +4,9 @@
  */
 
 
-var router = require('./routes').Route;
-var handler = require('./handlers').Handles;
-require('./server').Start(router, handler);
+var router = require('./routes').route;
+var handler = require('./handlers').handles;
+require('./server').start(router, handler);
 
 var scheduler = require('./scheduler');
 var config = require('./config');

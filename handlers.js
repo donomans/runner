@@ -1,27 +1,28 @@
 "use strict";
 
-function Index(path, writer){
-  writer('did Index.')
+function index(path, response){
+  response.write('did Index.')
   console.log(path)
 };
 
-function Active(path, writer){
-  writer('did Active')
+function active(path, response){
+  response.write('did Active.')
   console.log(path)
 };
 
-function Favicon(path, writer){
+function favicon(path, response){
+  
 };
 
-function Default(path, writer){
-  writer('did Default.')
-  Index(path, writer)
+function catchAll(path, response){
+  response.write('did Default.')
+  Index(path, response)
 }
 
-exports.Handles = {
-  '/': Index
-  , '/index': Index
-  , '/active': Active
-  , '/favicon.ico': Favicon
-  , Default: Default
+exports.handles = {
+  '/': index
+  , '/index': index
+  , '/active': active
+  , '/favicon.ico': favicon
+  , Default: catchAll
 }
