@@ -1,6 +1,6 @@
 "use strict";
 
-exports.route = function(path, handler, response){
+exports.route = function route(path, handler, response){
   if(typeof handler[path] === 'function'){
     response.writeHead(200, {'Content-Type': 'text/plain'})
     handler[path](path, response);
