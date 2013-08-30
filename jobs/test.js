@@ -1,8 +1,10 @@
-export.config.test = {
+"use strict";
+
+exports.config.test = {
     /* add configuration here for a test task/job */
 }
 
 /// this is a test task/job
-export.Run = function() {
+exports.Run = function() {
   ///Run the task
 }
