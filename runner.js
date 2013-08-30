@@ -11,4 +11,4 @@ require('./server').start(router, handler);
 var scheduler = require('./scheduler');
 var config = require('./config');
 
-//scheduler.Start(config);
+scheduler.start(config);

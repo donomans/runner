@@ -1,16 +1,42 @@
 "use strict";
 
-exports.next = function next(){
+var mintimer = 1000 * 60
 
+var jobs = { 
+    find: function(){
+      ///find the next job
+    }
+  }
+
+
+
+function next(){
+  ///find the next job
+  return jobs.find()
 };
 
+exports.start = function (config){
+  ///load config into jobs
+  
+  setTimeout(function() {
+    start()
+  }, 0);
+};
 
-exports.start = function start(){
-  setTimeout(1, function findJobs(){
+function start(){
+  setTimeout(function findJobs(){
     ///start the work of finding all the jobs and organize them
     
-    setTimeout(1, function startJobs(){
-      //start it the first job, potentially
-    });
-  });
+    setTimeout(function startJobs(){
+      //start the first job, potentially
+      var job = next()
+      //do job
+      if(job){
+      
+      } else {
+        setTimeout(startJobs, mintimer)
+      }
+    }, 10);
+  }, 10);
 };
+
