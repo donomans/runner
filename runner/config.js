@@ -5,8 +5,7 @@ var config = {};
 
 ///load config.json file if it exists and contains stuff
 
-
-
+///done(config)
 exports.loadConfig = function loadConfig(done){
   var dirs = [] 
   fs.readdir('./jobs', function(err, files){

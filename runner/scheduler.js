@@ -3,7 +3,7 @@
 var mintimer = 1000 * 60
 
 var jobs = { 
-    find: function(){
+      find: function(){
       ///find the next job
     }
   }

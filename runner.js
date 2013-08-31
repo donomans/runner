@@ -4,12 +4,12 @@
  */
 
 
-var router = require('./routes').route;
-var handler = require('./handlers').handles;
-require('./server').start(router, handler);
+var router = require('./site/routes').route;
+var handler = require('./site/handlers').handles;
+require('./site/server').start(router, handler);
 
-var scheduler = require('./scheduler');
+var scheduler = require('./runner/scheduler');
 
-require('./config').loadConfig(function(config){
+require('./runner/config').loadConfig(function(config){
   scheduler.start(config);
 });
