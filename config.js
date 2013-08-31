@@ -7,7 +7,7 @@ var config = {};
 
 
 
-exports.loadConfig = function loadConfig(){
+exports.loadConfig = function loadConfig(done){
   var dirs = [] 
   fs.readdir('./jobs', function(err, files){
     if(err){

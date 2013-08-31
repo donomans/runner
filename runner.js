@@ -9,6 +9,7 @@ var handler = require('./handlers').handles;
 require('./server').start(router, handler);
 
 var scheduler = require('./scheduler');
-var config = require('./config');
 
-scheduler.start(config);
+require('./config').loadConfig(function(config){
+  scheduler.start(config);
+});
