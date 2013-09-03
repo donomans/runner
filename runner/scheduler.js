@@ -19,8 +19,8 @@ var mintimer = 1000 * 60 //60 seconds
 * fire off the child processes for immediate and delayed job runners
 */
 exports.startWorkers = function (config){
-  immediate = fork('./worker/immediateWorker.js')
-  delayed = fork('./worker/delayedWorker.js')
+  immediate = fork('./worker/immediateWorker.js', JSON.stringify(config.immediateJobs))
+  delayed = fork('./worker/delayedWorker.js', JSON.stringify(config.delayedJobs))
 }
 
 /*
@@ -69,13 +69,13 @@ exports.addJob = function(job){
 * send job to delayedWorker child_process
 */
 function _addJobDelayed(job){
-  _addJob(delayed, job)
+  __addJob(delayed, job)
 }
 /*
 * send job to immediateWorker child_process
 */
 function _addJobImmediate(job){
-  _addJob(immediate, job)
+  __addJob(immediate, job)
 }
 
 function __addJob(worker, job){
