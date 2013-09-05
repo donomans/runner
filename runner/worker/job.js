@@ -10,6 +10,8 @@ function Job(config) {
   this.frequency = config.frequency
   this.id = crypto.randomBytes(20).toString('hex'); 
   this.config = config ///the config from the job file?
+  //calculate the path for require when it gets run in the worker
+  this.jobPath = ''
 }
 
 Job.prototype.Something = function(){}
