@@ -1,3 +1,4 @@
+"use strict";
 /*
 * Job class 
 */
@@ -10,8 +11,6 @@ function Job(name, frequency) {
     this.config = {} ///the config from the job file?
 }
 
-//Job.prototype.
+Job.prototype.Something = function(){}
 
-exports.Create = function(name, frequency){
-  return new Job(name, frequency)
-}
+exports = Job

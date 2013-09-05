@@ -1,3 +1,4 @@
+"use strict";
 var worker = require('./worker.js')
 
 var jobQueue = []

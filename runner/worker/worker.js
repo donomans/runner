@@ -1,3 +1,4 @@
+"use strict";
 
 var _jobs = []
 var running = false
