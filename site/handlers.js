@@ -2,12 +2,12 @@
 
 function index(path, response){
   response.write('did Index.')
-  console.log(path)
+  console.log('path: ' + path)
 };
 
 function active(path, response){
   response.write('did Active.')
-  console.log(path)
+  console.log('path: ' + path)
 };
 
 function favicon(path, response){
@@ -19,7 +19,7 @@ function catchAll(path, response){
   Index(path, response)
 }
 
-exports.handles = {
+module.exports.handles = {
   '/': index
   , '/index': index
   , '/active': active

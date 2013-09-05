@@ -8,7 +8,7 @@ var cb = void 0
 /*
 *
 */
-exports.run = function run(jobs, jobCallback){
+module.exports.run = function run(jobs, jobCallback){
   if(jobCallback){
     cb = jobCallback
   } else {
@@ -29,21 +29,21 @@ exports.run = function run(jobs, jobCallback){
 /*
 *
 */
-exports.addJobs = function addJobs(jobs){
+module.exports.addJobs = function addJobs(jobs){
   jobs.forEach(function(job){
     _jobs.push(job)
   })///vs.
   //_jobs.push(jobs)
 }
 
-exports.running = running
+module.exports.running = running
 
 function runJob(){
   if(_jobs[0]){
     var job = _jobs[0]
     running = true
-    jobRunner = require('../../jobs/' + _jobs[0].name)
-    jobRunner.run(job.config, clearJob)
+    jobRunner = require('../../jobs/' + _jobs[0].name + '.js')
+    jobRunner.run(job.id, clearJob)
     setTimeout(runJob, 1000)
   } else {
     setTimeout(runJob, 1000 * 60 * 10)

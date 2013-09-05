@@ -18,7 +18,7 @@ var mintimer = 1000 * 60 //60 seconds
 /*
 * fire off the child processes for immediate and delayed job runners
 */
-exports.startWorkers = function (config){
+module.exports.startWorkers = function (config){
   immediate = fork('./worker/immediateWorker.js', JSON.stringify(config.immediateJobs))
   delayed = fork('./worker/delayedWorker.js', JSON.stringify(config.delayedJobs))
 }
@@ -29,7 +29,7 @@ exports.startWorkers = function (config){
 * -> callbacks only need to be set one time
 *    if left blank they will not overwrite
 */
-exports.getStatus = function(delayedJobsCallback, immediateJobsCallback){
+module.exports.getStatus = function(delayedJobsCallback, immediateJobsCallback){
   if(delayedJobsCallback){
     delayedJobsCb = delayedJobsCallback
   }
@@ -57,7 +57,7 @@ exports.getStatus = function(delayedJobsCallback, immediateJobsCallback){
 /*
 * add job to the right job runner based the job's info
 */
-exports.addJob = function(job){
+module.exports.addJob = function(job){
   if(job.delayed){
     _addJobDelayed(job)
   } else {
