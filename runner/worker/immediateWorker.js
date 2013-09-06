@@ -1,5 +1,5 @@
 "use strict";
-var worker = require('./worker.js')
+var worker = new (require('./worker.js'))()
 
 var jobQueue = []
 ///load in args that the scheduler passed along?
@@ -7,7 +7,7 @@ var jobQueue = []
 * Use worker to run the jobs this process has been handed
 */
 function work(){
-  if(worker && !worker.running){
+  if(worker && !worker.running()){
     worker.run(jobQueue, jobResult)
   } else {
     worker.addJobs(jobQueue)

@@ -1,17 +1,17 @@
 "use strict";
 
-var _jobs = []
-var running = false
-var cb = void 0
-//Array.prototype.findJob = function(jobId){
-//}
+function Worker(){
+  this._jobs = []
+  this.running = false
+  this.cb = void 0
+}
 
 /*
 * Run the actual job
 * -> call the jobCallback when 'done' (either through error or otherwise)
 * -> jobCallback should look like: function(err, result, jobId) {}
 */
-module.exports.run = function run(jobs, jobCallback){
+Worker.prototype.run = function run(jobs, jobCallback){
   if(jobCallback){
     cb = jobCallback
   } else {
@@ -33,7 +33,7 @@ module.exports.run = function run(jobs, jobCallback){
 /*
 * Add a job to the job queue
 */
-module.exports.addJobs = function addJobs(jobs){
+Worker.prototype.addJobs = function addJobs(jobs){
   jobs.forEach(function(job){
     _jobs.push(job)
   })///vs.
@@ -43,7 +43,11 @@ module.exports.addJobs = function addJobs(jobs){
 /*
 * Current status of the job runner (true/false)
 */
-module.exports.running = running
+Worker.prototype.running = function(){
+  return this.running
+}
+
+module.exports = Worker
 
 function runJob(){
   if(_jobs.length > 0){
@@ -55,7 +59,6 @@ function runJob(){
   } else {
     setTimeout(runJob, 1000 * 60 * 10)
   }
-  
 }
 
 function clearJob(err, result, jobId){
