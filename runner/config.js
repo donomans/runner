@@ -11,7 +11,7 @@ var config = {
 
 ///done(config)
 function loadConfig(done){
-  var dirs = [] 
+  var dirs
   fs.readdir('./jobs', function(err, files){
     if(err){
       console.log(err)
@@ -19,30 +19,40 @@ function loadConfig(done){
     } else {
       dirs = files
       dirs.forEach(function(file){
-        var fileName = ''
-        var jobConfig = {}
-        var newJob = {}
+        var fileName,
+            jobConfig,
+            newJob
         
         if(file.indexOf('.js') !== -1){
           //var cleanName = file.substring(0, file.lastIndexOf('.'))
           fileName = '../jobs/' + file
           //console.log(fileName)
           jobConfig = require(fileName).config
+          jobConfig.jobPath = fileName
           //console.log(jobConfig)
           
         } else {
           fileName = '../jobs/' + file + '/' + file + '.json'
           jobConfig = require(fileName)
+          jobConfig.jobPath = '../jobs/' + file + '/' + file
           //console.log(jobConfig)
         }
-        var newJob = new Job(jobConfig)
-        config.jobs.push(newJob)
+        if(canBeScheduled(jobConfig)){
+          newJob = new Job(jobConfig)
+          config.jobs.push(newJob)
+        }
       })
       //console.log(config)
       writeConfig()
       //done(config)
     }
   })
+}
+/*
+* check the job frequency and confirm it has not passed and isn't invalid
+*/
+function canBeScheduled(config){
+  return true
 }
 
 function writeConfig(){

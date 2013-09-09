@@ -1,11 +1,13 @@
 "use strict";
 
-var workJob = new (require('workerJobs'))()
+var WorkJob = new require('workerJobs')
+var workJob = new WorkJob()
 
 var config = {
   /* add configuration here for a test task/job */
   jobName: 'test',
-  frequency: 'immediate'
+  frequency: 'immediate',
+  retry: true
 }
 
 workJob.config = config
@@ -16,6 +18,10 @@ workJob.job(
   ///Run the task
   console.log('ran the test job')
   //cb(void 0, 'success', id)
+  return 'first part done'
+}).then(function(result){
+  console.log(result)
+  console.log('ran this part too')
 })
 
 module.exports = workJob

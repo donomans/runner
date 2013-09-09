@@ -1,3 +1,4 @@
+"use strict";
 /*
 * workerJobs:
 * -> emits: error, started, finished
@@ -9,53 +10,64 @@
 var q = require("q")
 var emitter = require('events').EventEmitter
 
-function WorkerJob(){
+function WorkerJob(id){
   this.config = {
-    jobName: ''
+    jobName: '',
+    jobId: id
   }
-  this.jobCb = void 0
+  this.callbacks = []
+  this.failCb = void 0
 }
-
-/*
-*
-* -> jobFn = function()
-*/
-WorkerJob.prototype.job = function job(jobFn){
-  this.jobCb = jobFn
+WorkerJob.prototype = {
+  /*
+  *
+  * -> jobFn = function()
+  * -> failFn = function(err)
+  */
+  job: function job(jobFn, jobFailFn){
+    if(typeof jobFailFn == 'function'){
+      this.failCb = jobFailFn 
+    }
+    this.callbacks.push(jobFn)
+      
+    return this
+  },
   
-  return this
-}
-
-/*
-* continuation function that takes the result of 
-*  jobFn or the previous continueFn
-* -> continueFn = function(result)
-*/
-WorkerJob.prototype.then = function job(continueFn){
+  /*
+  * continuation function that takes the result of 
+  *  jobFn or the previous continueFn
+  * -> continueFn = function(result)
+  */
+  then: function job(continueFn){
+    this.callbacks.push(continueFn)
+    return this
+  },
+  
+  /*
+  *
+  */
+  run: function run(id, workerCb){
+    emitter.emit('started', 'Started the job, ' 
+                 + this.config.jobName + '(id: ' + this.config.jobId + ')' +
+                 ', at ' + new Date().toString())
     
-}
-    
-/*
-*
-* -> cb = function(err, result, jobId)
-*/
-WorkerJob.prototype.run = function run(id, cb){
-  emitter.emit('started', 'Started the job, ' 
-               + module.exports.config.jobName +
-               ', at ' + new Date().toString())
-  
-  try{
-    this.jobCb()
-    emitter.emit('finished', 'Finished the job (id: ' + id + ')')
-    cb(void 0, 'finished', id)
+    try{
+      var result = this.jobCb()
+      while(this.thenCbs[0]){
+        var thencb = this.thenCbs.shift()
+        result = thencb(result)
+      }
+      emitter.emit('finished', 'Finished the job (id: ' + this.config.jobId + ') at ' + new Date().toString())
+      workerCb(void 0, result || 'finished', id)
+    }
+    catch(err){
+      if(typeof this.failCb === 'function'){
+        this.failCb(err)
+      }
+      emitter.emit('error', err)
+      workerCb(err, 'an uncaught exception happened.', id)
+    }
   }
-  catch(err){
-    emitter.emit('error', err)
-    cb(err, 'an uncaught exception happened.', id)
-  }
-  
-  
 }
-
 
 module.exports = WorkerJob
