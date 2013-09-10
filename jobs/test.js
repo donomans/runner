@@ -1,6 +1,6 @@
 "use strict";
 
-var WorkJob = new require('workerJobs')
+var WorkJob = require('workerJobs')
 var workJob = new WorkJob()
 
 var config = {
@@ -13,11 +13,9 @@ var config = {
 workJob.config = config
 
 /// this is a test task/job
-workJob.job(
-  function(){//id, cb) {
+workJob.job(function(){
   ///Run the task
   console.log('ran the test job')
-  //cb(void 0, 'success', id)
   return 'first part done'
 }).then(function(result){
   console.log(result)

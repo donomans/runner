@@ -2,6 +2,7 @@
 
 function Worker(){
   this._jobs = []
+  this._runJobs = []
   this.running = false
   this.cb = void 0
   
@@ -9,10 +10,13 @@ function Worker(){
   
   this.runJob = function runJob(){
   if(self._jobs.length > 0){
-    var job = self._jobs.shift()
+    var jobConfig = self._jobs.shift()
+    this._runJobs.push(jobConfig)
     self.running = true
-    var jobRunner = require('../' + job.jobPath)
-    jobRunner.run(job.id, self.clearJob)
+    jobConfig.running = true
+    jobConfig.startedTime = new Date().toString()
+    var jobRunner = require('../' + jobConfig.job.jobPath)
+    jobRunner.run(jobConfig.job.id, self.clearJob)
     setTimeout(runJob, 1000)
     } else {
       setTimeout(runJob, 1000 * 60 * 10)
@@ -23,7 +27,21 @@ function Worker(){
     if(err){
       //do something special?
     } 
-    
+    ///what if i don't find it, for some reason?
+    var found = false
+    this._runJobs.forEach(function(jobConfig){
+      if(jobConfig.job.id === jobId){
+        jobConfig.running = false
+        jobConfig.err = err
+        jobConfig.result = result
+        jobConfig.stoppedTime = new Date().toString()
+        found = true
+      }
+    })
+    if(!found){
+      //freak out.
+    }
+    self.running = false
     //do something with result
     self.cb(err, result, jobId)
   }
@@ -40,16 +58,12 @@ Worker.prototype = {
     } else {
       ///throw a fit... emit error?
     }
-    
-    //hmm - should i batch jobs together?
-    // if i push the entire jobs object then i will have
-    // an array (length will be undefined on all single jobs)
-    // - i can tell which jobs are highly related?
+
     var self = this
+    jobs = jobs || []
     jobs.forEach(function(job){
       self._jobs.push(job)
-    })///vs.
-    //_jobs.push(jobs)
+    })
     
     setTimeout(this.runJob, 100)
   },
@@ -59,16 +73,41 @@ Worker.prototype = {
   addJobs: function addJobs(jobs){
     var self = this
     jobs.forEach(function(job){
-      self._jobs.push(job)
-    })///vs.
-    //_jobs.push(jobs)
+      self._jobs.push({ 
+        job: job, 
+        running: false, 
+        err: false, 
+        finished: false,
+        result: false
+      })
+    })
   },
   
-  /*
-  * Current status of the job runner (true/false)
-  */
-  running: function(){
-    return this.running
+  // /*
+  // * Current status of the job runner (true/false)
+  // */
+  // running: function(){
+  //   return this.running
+  // }
+  getStatus: function getStatus(jobId){
+    ///runner needs to manage status of jobs - multiple could be running
+    var status = void 0
+    
+    this._runJobs.forEach(function(jobConfig){
+      if(jobConfig.job.id === jobId){
+        status = jobConfig
+      }
+    })
+    if(status !== void 0){
+      return status
+    } else {
+      this._jobs.forEach(function(jobConfig){
+        if(jobConfig.job.id === jobId){
+          status = jobConfig
+        }
+      })
+      return status
+    }
   }
 }
 module.exports = Worker
