@@ -22,6 +22,9 @@ workJob.job(
 }).then(function(result){
   console.log(result)
   console.log('ran this part too')
+  return result + '\r\n second part done too';
+}).then(function(result){
+  console.log(result)
 })
 
 module.exports = workJob

@@ -13,7 +13,7 @@ var emitter = require('events').EventEmitter
 function WorkerJob(id){
   this.config = {
     jobName: '',
-    jobId: id
+    jobId: id || void 0
   }
   this.callbacks = []
   this.failCb = void 0
@@ -57,15 +57,21 @@ WorkerJob.prototype = {
         var thencb = this.thenCbs.shift()
         result = thencb(result)
       }
-      emitter.emit('finished', 'Finished the job (id: ' + this.config.jobId + ') at ' + new Date().toString())
-      workerCb(void 0, result || 'finished', id)
+      emitter.emit('finished', 'Finished the job (id: ' + 
+                   this.config.jobId || id + 
+                   ') at ' + new Date().toString())
+      workerCb(void 0, 
+               result || 'finished', 
+               this.config.jobId || id)
     }
     catch(err){
       if(typeof this.failCb === 'function'){
         this.failCb(err)
       }
       emitter.emit('error', err)
-      workerCb(err, 'an uncaught exception happened.', id)
+      workerCb(err, 
+               'an uncaught exception happened.', 
+               this.config.jobId || id)
     }
   }
 }
