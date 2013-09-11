@@ -51,6 +51,8 @@ Worker.prototype = {
   * Run the actual job
   * -> call the jobCallback when 'done' (either through error or otherwise)
   * -> jobCallback should look like: function(err, result, jobId) {}
+  *
+  * -> jobs is an array of Job objects
   */
   run: function run(jobs, jobCallback){
     if(jobCallback){
@@ -62,16 +64,24 @@ Worker.prototype = {
     var self = this
     jobs = jobs || []
     jobs.forEach(function(job){
-      self._jobs.push(job)
+      self._jobs.push({ 
+        job: job, 
+        running: false, 
+        err: false, 
+        finished: false,
+        result: false
+      })
     })
     
     setTimeout(this.runJob, 100)
   },
   /*
   * Add a job to the job queue
+  * -> jobs is an array of Job objects
   */
   addJobs: function addJobs(jobs){
     var self = this
+    jobs = jobs || []
     jobs.forEach(function(job){
       self._jobs.push({ 
         job: job, 
