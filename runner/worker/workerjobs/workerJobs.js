@@ -1,18 +1,17 @@
 "use strict";
+
+var emitter = new (require('events').EventEmitter)()
+
 /*
-* workerJobs:
+* WorkerJobs:
 * -> emits: error, started, finished
 * 
-* workerJob is responsible for wrapping a task run with some emits
+* WorkerJob is responsible for wrapping a task run with some emits and promises
 *
 */
-
-var q = require("q")
-var emitter = require('events').EventEmitter
-
-function WorkerJob(id){
+function WorkerJob(id, name){
   this.config = {
-    jobName: '',
+    jobName: name || '',
     jobId: id || void 0
   }
   this.callbacks = []
@@ -38,7 +37,7 @@ WorkerJob.prototype = {
   *  jobFn or the previous continueFn
   * -> continueFn = function(result)
   */
-  then: function job(continueFn){
+  then: function then(continueFn){
     this.callbacks.push(continueFn)
     return this
   },
@@ -52,10 +51,10 @@ WorkerJob.prototype = {
                  ', at ' + new Date().toString())
     
     try{
-      var result = this.jobCb()
-      while(this.thenCbs[0]){
-        var thencb = this.thenCbs.shift()
-        result = thencb(result)
+      var result
+      while(this.callbacks[0]){
+        var cb = this.callbacks.shift()
+        result = cb(result)
       }
       emitter.emit('finished', 'Finished the job (id: ' + 
                    this.config.jobId || id + 

@@ -18,11 +18,11 @@ workJob.job(function(){
   console.log('ran the test job')
   return 'first part done'
 }).then(function(result){
-  console.log(result)
+  console.log('got this from previous part: ' + result)
   console.log('ran this part too')
-  return result + '\r\n second part done too';
+  return result + ', second part done too';
 }).then(function(result){
-  console.log(result)
+  console.log('got this from previous part: ' + result)
 })
 
 module.exports = workJob
