@@ -11,25 +11,30 @@ function Worker(){
   this.runJob = function runJob(){
   if(self._jobs.length > 0){
     var jobConfig = self._jobs.shift()
-    this._runJobs.push(jobConfig)
+    
     self.running = true
     jobConfig.running = true
     jobConfig.startedTime = new Date().toString()
+    
     var jobRunner = require('../' + jobConfig.job.jobPath)
-    jobRunner.run(jobConfig.job.id, self.clearJob)
+    console.log('prepped job')
+    self._runJobs.push(jobConfig)
+    
+    jobRunner.run(jobConfig.job.id, self._clearJob)
+    
     setTimeout(runJob, 1000)
     } else {
       setTimeout(runJob, 1000 * 60 * 10)
     }
   }
 
-  this.clearJob = function clearJob(err, result, jobId){
+  this._clearJob = function _clearJob(err, result, jobId){
     if(err){
       //do something special?
     } 
     ///what if i don't find it, for some reason?
     var found = false
-    this._runJobs.forEach(function(jobConfig){
+    self._runJobs.forEach(function(jobConfig){
       if(jobConfig.job.id === jobId){
         jobConfig.running = false
         jobConfig.err = err
@@ -93,13 +98,10 @@ Worker.prototype = {
     })
   },
   
-  // /*
-  // * Current status of the job runner (true/false)
-  // */
-  // running: function(){
-  //   return this.running
-  // }
-  getStatus: function getStatus(jobId){
+  /*
+  * Current status of the specified job
+  */
+  getStatusOfJob: function getStatusOfJob(jobId){
     ///runner needs to manage status of jobs - multiple could be running
     var status = void 0
     
@@ -118,6 +120,12 @@ Worker.prototype = {
       })
       return status
     }
+  },
+  /*
+  *
+  */
+  getStatus: function getStatus(){
+    
   }
 }
 module.exports = Worker
