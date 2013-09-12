@@ -16,11 +16,11 @@ function Worker(){
     jobConfig.running = true
     jobConfig.startedTime = new Date().toString()
     
-    var jobRunner = require('../' + jobConfig.job.jobPath)
-    console.log('prepped job')
+    var jobRunner = new (require('../' + jobConfig.job.jobPath))()
+    console.log('prepped job (name: ' + jobConfig.job.jobName + ', id: ' + jobConfig.job.id + ')')
     self._runJobs.push(jobConfig)
     
-    jobRunner.run(jobConfig.job.id, self._clearJob)
+    jobRunner.workJob.run(jobConfig.job, self._clearJob)
     
     setTimeout(runJob, 1000)
     } else {
@@ -44,7 +44,7 @@ function Worker(){
       }
     })
     if(!found){
-      //freak out.
+      ///TODO: freak out.
     }
     self.running = false
     //do something with result
@@ -63,7 +63,7 @@ Worker.prototype = {
     if(jobCallback){
       this.cb = jobCallback
     } else {
-      ///throw a fit... emit error?
+      ///TODO: throw a fit... emit error?
     }
 
     var self = this

@@ -1,28 +1,29 @@
 "use strict";
+function Test(){
+this.WorkJob = require('workerJobs')
+this.workJob = new this.WorkJob()
 
-var WorkJob = require('workerJobs')
-var workJob = new WorkJob()
-
-var config = {
+this.config = {
   /* add configuration here for a test task/job */
   jobName: 'test',
   frequency: 'immediate',
   retry: true
 }
 
-workJob.config = config
+this.workJob.config = this.config
 
 /// this is a test task/job
-workJob.job(function(){
+this.workJob.job(function(promise){
   ///Run the task
   console.log('ran the test job')
-  return 'first part done'
-}).then(function(result){
-  console.log('got this from previous part: ' + result)
-  console.log('ran this part too')
-  return result + ', second part done too';
-}).then(function(result){
-  console.log('got this from previous part: ' + result)
+  
+  
+  promise.then(function(promise){
+    console.log('ran this part too')
+  }).then(function(promise){
+    console.log('got this from previous part: ' + promise.config.jobName)
+  })
+  promise.resolve()
 })
-
-module.exports = workJob
+}
+module.exports = Test//workJob

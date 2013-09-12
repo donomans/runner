@@ -10,6 +10,7 @@ var emitter = new (require('events').EventEmitter)()
 *
 */
 function WorkerJob(id, name){
+  this.promise = new (require('../promise.js'))()
   this.config = {
     jobName: name || '',
     jobId: id || void 0
@@ -28,8 +29,8 @@ WorkerJob.prototype = {
       this.failCb = jobFailFn 
     }
     this.callbacks.push(jobFn)
-      
-    return this
+    //this.promise.then(jobFn, jobFailFn)
+    //return this
   },
   
   /*
@@ -37,31 +38,36 @@ WorkerJob.prototype = {
   *  jobFn or the previous continueFn
   * -> continueFn = function(result)
   */
-  then: function then(continueFn){
-    this.callbacks.push(continueFn)
-    return this
-  },
+//  then: function then(continueFn){
+//    //this.callbacks.push(continueFn)
+//    this.promise.then(continueFn)
+//    return this
+//  },
   
   /*
   *
   */
-  run: function run(id, workerCb){
+  run: function run(jobConfig, workerCb){
+    if(jobConfig){
+      this.config = jobConfig
+      this.promise.config = jobConfig
+    }
     emitter.emit('started', 'Started the job, ' 
-                 + this.config.jobName + '(id: ' + this.config.jobId + ')' +
+                 + this.config.jobName + '(id: ' + this.config.id + ')' +
                  ', at ' + new Date().toString())
     
     try{
       var result
       while(this.callbacks[0]){
         var cb = this.callbacks.shift()
-        result = cb(result)
+        result = cb(this.promise)
       }
       emitter.emit('finished', 'Finished the job (id: ' + 
-                   this.config.jobId || id + 
+                   this.config.id || id + 
                    ') at ' + new Date().toString())
       workerCb(void 0, 
-               result || 'finished', 
-               this.config.jobId || id)
+               this.promise.data || 'finished', 
+               this.config.id)
     }
     catch(err){
       if(typeof this.failCb === 'function'){
@@ -70,7 +76,7 @@ WorkerJob.prototype = {
       emitter.emit('error', err)
       workerCb(err, 
                'an uncaught exception happened.', 
-               this.config.jobId || id)
+               this.config.id)
     }
   }
 }

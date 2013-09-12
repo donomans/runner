@@ -25,7 +25,7 @@ Scheduler.prototype = {
     var jobs = this._parseJobs(config)
     this.immediate = fork('./runner/worker/immediateWorker.js', [JSON.stringify(jobs.immediate)])
     this.delayed = fork('./runner/worker/delayedWorker.js', [JSON.stringify(jobs.delayed)])
-    console.log('startWorkers forks started')
+    //console.log('startWorkers forks started')
   },
   _parseJobs: function(config){
     var immediatejobs = []
@@ -37,10 +37,10 @@ Scheduler.prototype = {
         delayedjobs.push(job)
       }
     })
-    console.log('immediate jobs parsed: ')
-    console.log(immediatejobs)
-    console.log('delayed jobs parsed: ')
-    console.log(delayedjobs)
+//    console.log('immediate jobs parsed: ')
+//    console.log(immediatejobs)
+//    console.log('delayed jobs parsed: ')
+//    console.log(delayedjobs)
     return { immediate: immediatejobs, delayed: delayedjobs }
   },
   /*

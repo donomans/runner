@@ -17,7 +17,7 @@ function Configuration(){
         console.log(err)
         throw err
       } else {
-        console.log('config saved to: ' + 'config.json')
+        //console.log('config saved to: ' + 'config.json')
       }
     })
   }
@@ -46,7 +46,7 @@ Configuration.prototype = {
             //var cleanName = file.substring(0, file.lastIndexOf('.'))
             fileName = '../jobs/' + file
             //console.log(fileName)
-            jobConfig = require(fileName).config
+            jobConfig = new (require(fileName))().config
             jobConfig.jobPath = fileName
             //console.log(jobConfig)
             
@@ -57,13 +57,15 @@ Configuration.prototype = {
             //console.log(jobConfig)
           }
           if(self._canBeScheduled(jobConfig)){
-            newJob = new Job(jobConfig)
-            self.config.jobs.push(newJob)
+            for(var i =0; i <500; i++){
+              newJob = new Job(jobConfig)
+              self.config.jobs.push(newJob)
+            }
           }
         })
         //console.log(config)
         self._writeConfig()
-        console.log('checking done cb is type function: ' + (typeof done === 'function'))
+        //console.log('checking done cb is type function: ' + (typeof done === 'function'))
         done(self.config)
       }
     })

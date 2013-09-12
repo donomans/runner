@@ -12,7 +12,7 @@ var scheduler = new (require('./runner/scheduler'))()
 var configuration = new (require('./runner/config'))()
 
 configuration.loadConfig(function(config){
-  console.log('loadConfig cb: ')
-  console.log(config)
+  //console.log('loadConfig cb: ')
+  //console.log(config)
   scheduler.startWorkers(config);
 });

@@ -3,8 +3,8 @@ var worker = new (require('./worker.js'))()
 
 var jobQueue = JSON.parse(process.argv[2])
 ///load in args that the scheduler passed along?
-console.log('immediateWorker started')
-console.log(JSON.parse(process.argv[2]))
+//console.log('immediateWorker started')
+//console.log(JSON.parse(process.argv[2]))
 
 /*
 * Use worker to run the jobs this process has been handed
