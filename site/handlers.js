@@ -16,7 +16,7 @@ function favicon(path, response){
 
 function catchAll(path, response){
   response.write('did Default.')
-  Index(path, response)
+  index(path, response)
 }
 
 module.exports.handles = {
