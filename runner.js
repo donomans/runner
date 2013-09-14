@@ -16,3 +16,8 @@ configuration.loadConfig(function(config){
   //console.log(config)
   scheduler.startWorkers(config);
 });
+
+process.on('error', function(data){
+  ///do something with the data
+  console.log(data)
+});

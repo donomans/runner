@@ -46,7 +46,7 @@ Configuration.prototype = {
             //var cleanName = file.substring(0, file.lastIndexOf('.'))
             fileName = '../jobs/' + file
             //console.log(fileName)
-            jobConfig = new (require(fileName))().config
+            jobConfig = new require(fileName).config
             jobConfig.jobPath = fileName
             //console.log(jobConfig)
             
@@ -57,10 +57,8 @@ Configuration.prototype = {
             //console.log(jobConfig)
           }
           if(self._canBeScheduled(jobConfig)){
-            for(var i =0; i <500; i++){
-              newJob = new Job(jobConfig)
-              self.config.jobs.push(newJob)
-            }
+            newJob = new Job(jobConfig)
+            self.config.jobs.push(newJob)
           }
         })
         //console.log(config)
