@@ -1,6 +1,7 @@
 "use strict";
 
 var fs = require('fs')
+var lib = require('./lib.js')
 var Job = require('./worker/job.js')
 
 function Configuration(){
@@ -71,7 +72,7 @@ Configuration.prototype = {
   /*
   * check the job frequency and confirm it has not passed and isn't invalid
   */
-  _canBeScheduled: function canBeScheduled(config){
+  _canBeScheduled: function _canBeScheduled(config){
     if(config.frequency === 'immediate'){
       return true
     } else if(config.delayed && config.frequency === 'something valid'){

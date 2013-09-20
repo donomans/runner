@@ -25,29 +25,16 @@ function jobResult(err, result, jobId){
 process.on('message', function(message){
   if(message){
     if(message.command === 'status'){
+      var status = {}
       if(message.jobId){
         ///get the status of a specific job
-        var status = worker.getStatusOfJob(message.jobId)
-        process.send(status)
+        status = worker.getStatusOfJob(message.jobId)
       } else {
         //get the status of all jobs and send it back
-        process.send({ 
-          from: 'immediate',
-          status: 'doing great.',
-          jobStatuses: [
-            {
-              jobId: 1234,
-              status: 'boourns',
-              name: 'dumbjob'
-            },
-            {
-              jobId: 1235,
-              status: 'yay',
-              name: 'moveFiles'
-            }
-          ]
-        })
+        status = worker.getStatus()
       }
+      process.send(status)
+      
     } else if(message.command === 'addJob'){
       if(typeof message.job.length === 'number'){
         message.job.forEach(function(job){

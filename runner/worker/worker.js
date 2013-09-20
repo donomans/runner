@@ -1,14 +1,16 @@
 "use strict";
+//TODO: listen for 'jobProgress' event and update status with that information
+
 
 function Worker(){
   this._jobs = []
   this._runJobs = []
-  this.running = false
+  this.running = false //of suspect usefulness?
   this.cb = void 0
   
   var self = this
   
-  this.runJob = function runJob(){
+  this._runJob = function _runJob(){
   if(self._jobs.length > 0){
     var jobConfig = self._jobs.shift()
     
@@ -22,15 +24,15 @@ function Worker(){
     
     jobRunner.workJob.run(jobConfig.job, self._clearJob)
     
-    setTimeout(runJob, 1000)
+    setTimeout(_runJob, 1000)
     } else {
-      setTimeout(runJob, 1000 * 60 * 10)
+      setTimeout(_runJob, 1000 * 60 * 10)
     }
   }
 
   this._clearJob = function _clearJob(err, result, jobId){
     if(err){
-      //do something special?
+      //TODO: do something special?
     } 
     ///what if i don't find it, for some reason?
     var found = false
@@ -78,7 +80,7 @@ Worker.prototype = {
       })
     })
     
-    setTimeout(this.runJob, 100)
+    setTimeout(this._runJob, 100)
   },
   /*
   * Add a job to the job queue
@@ -125,7 +127,9 @@ Worker.prototype = {
   *
   */
   getStatus: function getStatus(){
-    
+    var status = []
+    status.push(this._jobs)
+    status.push(this._runJobs)
   }
 }
 module.exports = Worker
